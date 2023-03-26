@@ -20,12 +20,6 @@ type (
 		mmap gommap.MMap
 		size uint64
 	}
-
-	Config struct {
-		Segment struct {
-			MaxIndexBytes int
-		}
-	}
 )
 
 func (i *index) Close() error {
