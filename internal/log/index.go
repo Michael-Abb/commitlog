@@ -85,6 +85,7 @@ func newIndex(f *os.File, c Config) (*index, error) {
 		return nil, fmt.Errorf("failed to truncate file, using filename %s in index.newIndex with error %w", fi.Name(), err)
 	}
 
+
 	if idx.mmap, err = gommap.Map(
 		idx.file.Fd(),
 		gommap.PROT_READ|gommap.PROT_WRITE,
