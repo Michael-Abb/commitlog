@@ -52,14 +52,17 @@ func (s *store) Read(pos uint64) ([]byte, error) {
 	if err := s.buf.Flush(); err != nil {
 		return nil, fmt.Errorf("failed to flush buffer in store.Read with error %w", err)
 	}
+
 	size := make([]byte, lenWidth)
 	if _, err := s.File.ReadAt(size, int64(pos)); err != nil {
 		return nil, fmt.Errorf("failed to read file at position %d in store.Read with error %w", int64(pos), err)
 	}
+
 	b := make([]byte, enc.Uint64(size))
 	if _, err := s.File.ReadAt(b, int64(pos+lenWidth)); err != nil {
 		return nil, fmt.Errorf("failed to read file at position %d in store.Read with error %w", int64(pos+lenWidth), err)
 	}
+
 	return b, nil
 }
 

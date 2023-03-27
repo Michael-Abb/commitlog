@@ -14,13 +14,11 @@ var (
 	entWidth        = offWidth + posWidth
 )
 
-type (
-	index struct {
-		file *os.File
-		mmap gommap.MMap
-		size uint64
-	}
-)
+type	index struct {
+  file *os.File
+  mmap gommap.MMap
+  size uint64
+}
 
 func (i *index) Close() error {
 	if err := i.mmap.Sync(gommap.MS_SYNC); err != nil {
