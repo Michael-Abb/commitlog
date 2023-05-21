@@ -5,8 +5,9 @@ import (
 	"os"
 	"path"
 
-	api "github.com/michael-abb/commitlog/api/v1"
 	"google.golang.org/protobuf/proto"
+
+	api "github.com/michael-abb/commitlog/api/v1"
 )
 
 type segment struct {
@@ -18,13 +19,11 @@ type segment struct {
 
 func (s *segment) Read(off uint64) (*api.Record, error) {
 	_, pos, err := s.index.Read(int64(off - s.baseOffset))
-
 	if err != nil {
 		return nil, fmt.Errorf("failed to read from index in segmenet.Read with error %w", err)
 	}
 
 	p, err := s.store.Read(pos)
-
 	if err != nil {
 		return nil, fmt.Errorf("failed to read from store in segement.Read with error %w", err)
 	}
@@ -73,13 +72,11 @@ func (s *segment) Append(r *api.Record) (uint64, error) {
 	cur := s.nextOffset
 	r.Offset = cur
 	p, err := proto.Marshal(r)
-
 	if err != nil {
 		return 0, fmt.Errorf("failed to marshal, in segment.Append with error %w", err)
 	}
 
 	_, pos, err := s.store.Append(p)
-
 	if err != nil {
 		return 0, fmt.Errorf("failed to append to store, in segment.Append with error %w", err)
 	}
@@ -109,13 +106,15 @@ func newSegment(dir string, baseOffset uint64, c Config) (*segment, error) {
 		os.O_RDWR|os.O_CREATE,
 		0644,
 	)
-
 	if err != nil {
 		return nil, fmt.Errorf("failed to open file, in segment.newSegment with error %w", err)
 	}
 
 	if s.store, err = newStore(sf); err != nil {
-		return nil, fmt.Errorf("failed to create new store, in segment.newSegment with error %w", err)
+		return nil, fmt.Errorf(
+			"failed to create new store, in segment.newSegment with error %w",
+			err,
+		)
 	}
 
 	idxf, err := os.OpenFile(
@@ -123,13 +122,15 @@ func newSegment(dir string, baseOffset uint64, c Config) (*segment, error) {
 		os.O_RDWR|os.O_CREATE,
 		0644,
 	)
-
 	if err != nil {
 		return nil, fmt.Errorf("failed to open file, in segment.newSegment with error %w", err)
 	}
 
 	if s.index, err = newIndex(idxf, c); err != nil {
-		return nil, fmt.Errorf("failed to create new index, in segment.newSegement with error %w", err)
+		return nil, fmt.Errorf(
+			"failed to create new index, in segment.newSegement with error %w",
+			err,
+		)
 	}
 
 	if off, _, err := s.index.Read(-1); err != nil {
